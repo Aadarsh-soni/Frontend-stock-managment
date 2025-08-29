@@ -23,23 +23,23 @@ export default function LoginPage() {
   const { login } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
     setLoading(true);
 
     try {
       await login(email, password);
       router.push("/");
-    } catch (error) {
-      // Error is handled by the auth context
     } finally {
+      // auth-context handles toasts/errors
       setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
+      <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="mx-auto h-12 w-12 flex items-center justify-center rounded-full bg-blue-100">
             <Package className="h-6 w-6 text-blue-600" />
@@ -57,6 +57,7 @@ export default function LoginPage() {
               Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
@@ -64,10 +65,11 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
-                  placeholder="Enter your email"
+                  placeholder="you@example.com"
                 />
               </div>
 
@@ -76,10 +78,11 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type="password"
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Enter your password"
+                  placeholder="••••••••"
                 />
               </div>
 
@@ -89,7 +92,7 @@ export default function LoginPage() {
             </form>
 
             <div className="mt-6 text-center">
-              <p className="text-sm text-muted-foreground text-center">
+              <p className="text-sm text-muted-foreground">
                 {"Don't have an account? "}
                 <Link href="/signup" className="underline">
                   Sign up
